@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "866201487190",
+    "firebase_url": "https://shareroute-ab20b.firebaseio.com",
+    "project_id": "shareroute-ab20b",
+    "storage_bucket": "shareroute-ab20b.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:866201487190:android:be70726d633ff8b0",
+        "android_client_info": {
+          "package_name": "org.hddm.shareroute"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "866201487190-t9qtsbvpqc9nag76f5sj92faf6jjgt0k.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA0oMqq5CaRdlBYcLxePz3EKjFHg2uJD3c"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

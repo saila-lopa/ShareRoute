@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <TextView
+        android:id="@+id/networkerrortext"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:text="Oops!Couldn't connect to the internet"
+        android:visibility="gone"
+        android:gravity="center"
+        android:textSize="16sp"
+        android:textColor="#999"
+        />
+    <GridView
+        android:id="@+id/grid_route_list"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:numColumns="1"
+        android:gravity="center"
+        android:background="#FFFFFF"
+        android:horizontalSpacing="10dp"
+        android:verticalSpacing="10dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        >
+    </GridView>
+</RelativeLayout>
