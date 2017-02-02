@@ -12,6 +12,58 @@ import java.util.List;
 
 public class JsonHelper {
 
+    public static Route parseRouteDetails(String routeString) {
+        try {
+            JSONObject routeJSon = new JSONObject(routeString);
+            JSONObject jsonRouteObj = routeJSon.getJSONObject("route");
+            Route route = new Route();
+            route.setRouteId(jsonRouteObj.getString("routeId"));
+            if (jsonRouteObj.has("routeName"))
+                route.setRouteName(jsonRouteObj.getString("routeName"));
+            if (jsonRouteObj.has("quality"))
+                route.setQuality(jsonRouteObj.getString("quality"));
+            if (jsonRouteObj.has("note"))
+                route.setNote(jsonRouteObj.getString("note"));
+            if (jsonRouteObj.has("ride"))
+                route.setRide(jsonRouteObj.getString("ride"));
+            if (jsonRouteObj.has("fare"))
+                route.setFare(jsonRouteObj.getString("fare"));
+            if (jsonRouteObj.has("createDate"))
+                route.setCreateDate(jsonRouteObj.getString("createDate"));
+            if(jsonRouteObj.has("multilineString")) {
+                String multilineString = jsonRouteObj.getString("multilineString");
+                List<List<LatLng>> multiLines = parseMultiLineString(multilineString);
+                route.setPointsOnPath(multiLines);
+            }
+            return route;
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return  null;
+    }
+    public static List<List<LatLng>> parseMultiLineString(String multiLineString) {
+        List<List<LatLng>> polylinePoints = new ArrayList<List<LatLng>>();
+        String[] tmp = multiLineString.split("\\(");
+        if(tmp.length>=3) {
+            for (int i=2; i<tmp.length; i++) {
+                String[] pointsInLine = tmp[i].split(",");
+                List<LatLng> line = new ArrayList<LatLng>();
+                for (int j=0; j<pointsInLine.length; j++) {
+                    String[] points = pointsInLine[j].split(" ");
+                    points[0] = points[0].replaceAll("[^\\d.]", "");
+                    points[1] = points[1].replaceAll("[^\\d.]", "");
+                    double latitude = Double.parseDouble(points[0]);
+                    double longitude = Double.parseDouble(points[1]);
+                    LatLng latlng = new LatLng(latitude, longitude);
+                    line.add(latlng);
+                }
+                polylinePoints.add(line);
+            }
+        }
+        String[] tmp2 = tmp[1].split("\\(");
+        return  polylinePoints;
+    }
     public static List<String> parseUserSuggestion(JSONObject usersJson) {
         List<String> users = new ArrayList<String>();
         int k=0;
@@ -59,6 +111,7 @@ public class JsonHelper {
         }
         return  routeList;
     }
+
     public static JSONObject getRouteJson(Route route) {
         JSONObject finalobject = new JSONObject();
         try {

@@ -7,6 +7,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
@@ -26,12 +27,17 @@ import android.support.design.widget.NavigationView;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.iid.FirebaseInstanceId;
 
 import org.hddm.model.Route;
+import org.hddm.service.LocationServiceManager;
 import org.hddm.utils.BaseUrl;
+import org.hddm.utils.Constraints;
 import org.hddm.utils.HttpJsonPost;
 import org.hddm.utils.JsonHelper;
 import org.json.JSONException;
@@ -46,11 +52,17 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener{
     Toolbar toolbar;
-    Button btnDrawRoute;
+    Button btnDrawRoute, btnTrackRoute;
     static int currentFragmentId;
     static  String userId;
     FragmentTransaction ft;
     Context context = this;
+    LocationServiceManager locationManagerService;
+    private static final String[] LOCATION_PERMS={
+            android.Manifest.permission.ACCESS_FINE_LOCATION
+    };
+    private static final int INITIAL_REQUEST=1337;
+    private static final int LOCATION_REQUEST=INITIAL_REQUEST+3;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,8 +70,11 @@ public class MainActivity extends AppCompatActivity
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         btnDrawRoute = (Button) toolbar.findViewById(R.id.btn_draw_route);
+        btnTrackRoute = (Button) toolbar.findViewById(R.id.btn_track_route);
         if(btnDrawRoute!=null)
             btnDrawRoute.setVisibility(View.GONE);
+        if(btnTrackRoute!=null)
+            btnTrackRoute.setVisibility(View.GONE);
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -142,8 +157,72 @@ public class MainActivity extends AppCompatActivity
     public void onClick(View v) {
         if(v.getId() == R.id.btn_draw_route) {
             showEditDialog();
+        } else if(v.getId() == R.id.btn_track_route) {
+            String trackRouteBtnText = btnTrackRoute.getText().toString();
+            if(trackRouteBtnText.equalsIgnoreCase("start tracking")) {
+                startTracking();
+            } else {
+                manageTrackingStop();
+            }
         }
     }
+    private void startTracking() {
+        locationManagerService = new LocationServiceManager(context);
+        if(!locationManagerService.locationServiceAvailable)
+        {
+            if ( Build.VERSION.SDK_INT >= 23) {
+                requestPermissions(LOCATION_PERMS, LOCATION_REQUEST);
+            }
+            AlertDialog.Builder dialog = new AlertDialog.Builder(context);
+            dialog.setMessage("Location service is not enabled!To track route please enable Location service!");
+            dialog.setPositiveButton("Setting", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface paramDialogInterface, int paramInt) {
+                    // TODO Auto-generated method stub
+                    startActivityForResult(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS), 100);
+                }
+            });
+            dialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface paramDialogInterface, int paramInt) {
+                    // TODO Auto-generated method stub
+                    Toast.makeText(context, "Cant track route without location service being enabled!", Toast.LENGTH_LONG).show();
+                }
+            });
+            dialog.show();
+        } else {
+            manageTrackingStart();
+        }
+    }
+    private void manageTrackingStart() {
+        btnTrackRoute.setText("Stop Tracking");
+        locationManagerService.trackingStatus = true;
+//        SharedPreferences sharedPref = context.getSharedPreferences(context.getResources().getString(R.string.sharedPrefName), Context.MODE_PRIVATE);
+//        String lat = sharedPref.getString("latitude", "");
+//        String lng = sharedPref.getString("longitude", "");
+//        LatLng currentPosition;
+//        if(lat.isEmpty() || lng.isEmpty()) {
+//
+//        } else {
+//            currentPosition = new LatLng(Double.parseDouble(lat), Double.parseDouble(lng));
+//        }
+    }
+    private void manageTrackingStop() {
+        locationManagerService.trackingStatus = false;
+        btnTrackRoute.setText("Stopped Tracking");
+        showEditDialog();
+    }
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if(resultCode == 100){
+            if(locationManagerService.locationServiceAvailable) {
+                //change the button text to "Stop Tracking"
+                manageTrackingStart();
+            }else {
+                Toast.makeText(context, "Cant track route without location service being enabled!", Toast.LENGTH_LONG).show();
+            }
+        }
+    }
+
     private void showEditDialog() {
         FragmentManager fm = getSupportFragmentManager();
         RouteInfoDialogFragment editNameDialogFragment = RouteInfoDialogFragment.newInstance("Additional Info");
@@ -191,10 +270,12 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.draw_route) {
             displayContentFragment(id);
         } else if (id == R.id.track_route) {
-
+            displayContentFragment(R.id.track_route);
         } else if (id == R.id.nav_share) {
 
-        }  else if (id == R.id.logout) {
+        } else if(id == R.id.shared_with_me) {
+            displayContentFragment(R.id.shared_with_me);
+        } else if (id == R.id.logout) {
             removeLogin();
             startActivity(new Intent(this, LoginActivity.class));
         }
@@ -204,7 +285,6 @@ public class MainActivity extends AppCompatActivity
     }
     private void removeLogin(){
         new FcmInstanceIdRemoveFromDatabaseTask(this).execute();
-        removeSharedPrefCredentials();
     }
     public class FcmInstanceIdRemoveFromDatabaseTask extends AsyncTask<Void ,Void, Boolean> {
         String message;
@@ -237,9 +317,11 @@ public class MainActivity extends AppCompatActivity
                     SharedPreferences.Editor editor = sharedPref.edit();
                     editor.putString("notificationToken", null);
                     editor.commit();
+                    removeSharedPrefCredentials();
                     return true;
                 }
                 else{
+                    removeSharedPrefCredentials();
                     return false;
                 }
             } catch (ExceptionInInitializerError e) {
@@ -267,7 +349,7 @@ public class MainActivity extends AppCompatActivity
         editor.putString("name", null);
         editor.commit();
     }
-    private void displayContentFragment(int id) {
+    public void displayContentFragment(int id) {
         Fragment fragment = null;
         String title = getString(R.string.app_name);
 
@@ -275,11 +357,18 @@ public class MainActivity extends AppCompatActivity
             case R.id.route_list:
                 fragment = new RouteListFragment();
                 title  = "Routes";
-
                 break;
             case R.id.draw_route:
                 fragment = new DrawRouteFragment();
                 title = "Draw Route";
+                break;
+            case R.id.shared_with_me:
+                fragment = new SharedRouteListFragment();
+                title = "Draw Route";
+                break;
+            case R.id.track_route:
+                fragment = new TrackRouteFragment();
+                title = "Track Route";
                 break;
         }
         if (fragment != null) {
@@ -298,8 +387,13 @@ public class MainActivity extends AppCompatActivity
         if(id == R.id.draw_route) {
             if(btnDrawRoute!=null) {
                 btnDrawRoute.setVisibility(View.VISIBLE);
+                btnTrackRoute.setVisibility(View.GONE);
                 btnDrawRoute.setOnClickListener(this);
             }
+        } else if(id == R.id.track_route) {
+            btnTrackRoute.setVisibility(View.VISIBLE);
+            btnTrackRoute.setOnClickListener(this);
+            btnDrawRoute.setVisibility(View.GONE);
         }
     }
 }

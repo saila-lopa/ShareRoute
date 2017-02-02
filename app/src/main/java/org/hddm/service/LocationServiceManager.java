@@ -13,7 +13,12 @@ import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
 
+import com.google.android.gms.maps.model.LatLng;
+
 import org.hddm.shareroute.R;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by root on 7/26/16.
@@ -36,12 +41,14 @@ public class LocationServiceManager implements LocationListener {
     public double latitude;
     private Context context;
     public long driverId;
+    public static List<LatLng> pointsInPath;
     private static final String[] LOCATION_PERMS={
             Manifest.permission.ACCESS_FINE_LOCATION
     };
     private static final int INITIAL_REQUEST=1337;
     private static final int LOCATION_REQUEST=INITIAL_REQUEST+3;
     public boolean isGPSEnabled,isNetworkEnabled, locationServiceAvailable;
+    public boolean trackingStatus = false;
     /**
      * Singleton implementation
      * @return
@@ -58,6 +65,7 @@ public class LocationServiceManager implements LocationListener {
      */
     public LocationServiceManager(Context context )     {
         this.context = context;
+        pointsInPath = new ArrayList<LatLng>();
         initLocationService(context);
 //        LogService.log("LocationService created");
     }
@@ -139,13 +147,17 @@ public class LocationServiceManager implements LocationListener {
     @Override
     public void onLocationChanged(Location location) {
         // do stuff here with location object
-        latitude = location.getLatitude();
-        longitude = location.getLongitude();
-        SharedPreferences sharedPref = context.getSharedPreferences(context.getResources().getString(R.string.sharedPrefName), Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPref.edit();
-        editor.putString("latitude", latitude +"");
-        editor.putString("longitude", longitude +"");
-        editor.commit();
+        if(trackingStatus) {
+            latitude = location.getLatitude();
+            longitude = location.getLongitude();
+            LatLng currentPosition = new LatLng(latitude, longitude);
+            pointsInPath.add(currentPosition);
+        }
+//        SharedPreferences sharedPref = context.getSharedPreferences(context.getResources().getString(R.string.sharedPrefName), Context.MODE_PRIVATE);
+//        SharedPreferences.Editor editor = sharedPref.edit();
+//        editor.putString("latitude", latitude +"");
+//        editor.putString("longitude", longitude +"");
+//        editor.commit();
     }
 
     @Override

@@ -20,12 +20,14 @@ import android.widget.Toast;
 import com.google.android.gms.maps.model.LatLng;
 
 import org.hddm.model.Route;
+import org.hddm.service.LocationServiceManager;
 import org.hddm.utils.BaseUrl;
 import org.hddm.utils.HttpJsonPost;
 import org.hddm.utils.JsonHelper;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -109,7 +111,9 @@ public class RouteInfoDialogFragment extends DialogFragment {
             route.setPointsOnPath(points);
         } else if(MainActivity.currentFragmentId == R.id.track_route) {
             route.setCreatedThrough(MainActivity.currentFragmentId);
-            points = DrawRouteFragment.pathPolyline;
+            LocationServiceManager locationServiceManager = new LocationServiceManager(getContext());
+            points = new ArrayList<List<LatLng>>();
+            points.add(locationServiceManager.pointsInPath);
             route.setPointsOnPath(points);
         }
         new saveRouteTask(route).execute();

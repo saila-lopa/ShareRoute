@@ -3,9 +3,10 @@ package org.hddm.utils;
 public class BaseUrl {
 //	public static String BaseHTTP =  "http://www.imstarvin.ie/";
 
+//	public static String BaseHTTP =  "http://shareroute.socialcubebd.com:8080";
 	public static String BaseHTTP =  "http://formsworkflow5535.cloudapp.net/shareroute/public/";
 //	public static String BaseHTTP =  "http://188.165.247.23/";
-///	public static String BaseHTTP =  "http://92.222.190.101/";
+//	public static String BaseHTTP =  "http://192.168.0.111/";
 //	public static String BaseHTTP =  "http://admin.foodnetbd.com/";
 //	public static String BaseHTTP =  "http://192.168.0.130/";
 //	public static String BaseHTTP =  "http://sfd.socialcubebd.com:8080/";

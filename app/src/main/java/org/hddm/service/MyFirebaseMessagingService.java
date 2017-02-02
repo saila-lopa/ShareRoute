@@ -49,50 +49,54 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         showNotification(remoteMessage);
     }
     private void showNotification(RemoteMessage remoteMessage) {
-        if(remoteMessage!=null) {
-            Map<String, String> data = remoteMessage.getData();
+        try{
+            if(remoteMessage!=null) {
+                Map<String, String> data = remoteMessage.getData();
 
-            String message = data.get("message");
-            CharSequence text = message;
+                String message = data.get("message");
+                CharSequence text = message;
 
-            String extras = data.get("extras");
-            Intent intent;
-            JSONObject extrasJSON;
-            int soundFileId = R.raw.perseus;
-            try {
-                extrasJSON = new JSONObject(extras);
-                if(extrasJSON.has("routeId")) {
-                    int routeId = extrasJSON.getInt("routeId");
-                    intent = new Intent(this, RouteViewActivity.class);
-                    intent.putExtra("routeId", routeId);
-                }  else {
+                String extras = data.get("extras");
+                Intent intent;
+                JSONObject extrasJSON;
+                int soundFileId = R.raw.perseus;
+                try {
+                    extrasJSON = new JSONObject(extras);
+                    if(extrasJSON.has("routeId")) {
+                        int routeId = extrasJSON.getInt("routeId");
+                        intent = new Intent(this, MainActivity.class);
+                        intent.putExtra("routeId", routeId);
+                    }  else {
+                        intent = new Intent(this, MainActivity.class);
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
                     intent = new Intent(this, MainActivity.class);
                 }
-            } catch (JSONException e) {
-                e.printStackTrace();
-                intent = new Intent(this, MainActivity.class);
-            }
 
-            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-            PendingIntent contentIntent = PendingIntent.getActivity(this, NOTIFICATION_ID, intent, PendingIntent.FLAG_CANCEL_CURRENT);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                PendingIntent contentIntent = PendingIntent.getActivity(this, NOTIFICATION_ID, intent, PendingIntent.FLAG_CANCEL_CURRENT);
 
-            // Set the info for the views that show in the notification panel.
-            Notification notification = new Notification.Builder(this)
-                    .setDefaults(Notification.FLAG_ONLY_ALERT_ONCE | Notification.FLAG_AUTO_CANCEL)
-//                    .setSmallIcon(R.drawable.logo)  // the status icon
-                    .setTicker(text)  // the status text
-                    .setWhen(System.currentTimeMillis())  // the time stamp
-                    .setContentTitle(getText(R.string.local_service_label))  // the label of the entry
-                    .setContentText(text)  // the contents of the entry
-                    .setContentIntent(contentIntent)  // The intent to send when the entry is clicked
-                    .build();
+                // Set the info for the views that show in the notification panel.
+                Notification notification = new Notification.Builder(this)
+                        .setDefaults(Notification.FLAG_ONLY_ALERT_ONCE | Notification.FLAG_AUTO_CANCEL)
+                        .setSmallIcon(R.mipmap.ic_launcher)  // the status icon
+                        .setTicker(text)  // the status text
+                        .setWhen(System.currentTimeMillis())  // the time stamp
+                        .setContentTitle(getText(R.string.local_service_label))  // the label of the entry
+                        .setContentText(text)  // the contents of the entry
+                        .setContentIntent(contentIntent)  // The intent to send when the entry is clicked
+                        .build();
 //        notification.sound = soundUri;
 //
-            notification.flags = Notification.FLAG_AUTO_CANCEL; //| Notification.DEFAULT_SOUND ;Notification.DEFAULT_LIGHTS |
-            // Send the notification.
-            mNM = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
-            notification.sound = Uri.parse("android.resource://" + getPackageName() + "/" + soundFileId);
-            mNM.notify(NOTIFICATION_ID, notification);
+                notification.flags = Notification.FLAG_AUTO_CANCEL; //| Notification.DEFAULT_SOUND ;Notification.DEFAULT_LIGHTS |
+                // Send the notification.
+                mNM = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
+                notification.sound = Uri.parse("android.resource://" + getPackageName() + "/" + soundFileId);
+                mNM.notify(NOTIFICATION_ID, notification);
+            }
+        }catch (Exception ex) {
+            Log.d("FirebaseException", ex.getMessage());
         }
     }
 }

@@ -23,6 +23,8 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.iid.FirebaseInstanceId;
+
 import org.hddm.utils.*;
 
 import org.json.JSONException;
@@ -206,6 +208,7 @@ public class LoginActivity extends Activity implements View.OnClickListener {
                     editor.putString("email", user.getString("email"));
                     editor.putString("name", user.getString("name"));
                     editor.commit();
+                    FirebaseInstanceId.getInstance().getToken();
                     Intent ii = new Intent(context, MainActivity.class);
                     ii.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     ii.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);

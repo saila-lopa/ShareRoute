@@ -1,6 +1,5 @@
 package org.hddm.adapter;
 
-import android.app.Activity;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -8,12 +7,9 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.annotation.IntegerRes;
-import android.support.v4.app.FragmentManager;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,31 +25,28 @@ import android.widget.Toast;
 import org.hddm.model.Route;
 import org.hddm.shareroute.MainActivity;
 import org.hddm.shareroute.R;
-import org.hddm.shareroute.RouteInfoDialogFragment;
 import org.hddm.shareroute.RouteViewActivity;
 import org.hddm.utils.BaseUrl;
-import org.hddm.utils.DataParser;
 import org.hddm.utils.HttpJsonPost;
 import org.hddm.utils.JsonHelper;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 /**
- * Created by Saila on 12/18/2016.
+ * Created by Saila on 1/26/2017.
  */
-public class RouteListAdapter extends BaseAdapter implements View.OnClickListener{
+public class SharedRouteListAdapter extends BaseAdapter implements View.OnClickListener{
 
     Context context;
     String prevActivity;
     List<Route> routeList;
-    static  ArrayAdapter<String> userListAdapter;
+    static ArrayAdapter<String> userListAdapter;
     private static List<String> users;
     private static  List<String> newUsers;
-    public RouteListAdapter(Context con, List<Route> routeList)
+    public SharedRouteListAdapter(Context con, List<Route> routeList)
     {
         this.routeList = routeList;
         context = con;
@@ -85,7 +78,7 @@ public class RouteListAdapter extends BaseAdapter implements View.OnClickListene
         // ViewHolder holder ;
 //        if (convertView == null)
 //        {
-            gridView = inflater.inflate( R.layout.grid_route_list , null);
+        gridView = inflater.inflate( R.layout.grid_route_list , null);
 //        }
 //        else
 //        {
@@ -124,7 +117,7 @@ public class RouteListAdapter extends BaseAdapter implements View.OnClickListene
 
         public Context context;
         public Dialog d;
-        public Button btnCancel, btnShare;
+        public Button btnCancel;
         String routeId;
 
         public UserSelectDialog(Context context, String routeId) {
@@ -153,6 +146,11 @@ public class RouteListAdapter extends BaseAdapter implements View.OnClickListene
             textView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    String selectedEmail = users.get(position);
+                    SharedPreferences sharedPref = context.getSharedPreferences(context.getResources().getString(R.string.sharedPrefName), Context.MODE_PRIVATE);
+                    String userId = sharedPref.getString("userId", "");
+                    String userName = sharedPref.getString("name", "");
+                    new SendRouteToUserTask(userId, userName, selectedEmail, routeId).execute();
                 }
             });
             textView.addTextChangedListener(new TextWatcher() {
@@ -175,8 +173,6 @@ public class RouteListAdapter extends BaseAdapter implements View.OnClickListene
                 }
             });
             btnCancel = (Button) findViewById(R.id.btn_cancel);
-            btnShare = (Button) findViewById(R.id.btn_share);
-            btnCancel.setOnClickListener(this);
             btnCancel.setOnClickListener(this);
         }
 
@@ -185,15 +181,6 @@ public class RouteListAdapter extends BaseAdapter implements View.OnClickListene
             switch (v.getId()) {
                 case R.id.btn_cancel:
                     dismiss();
-                    break;
-                case R.id.btn_share:
-                    AutoCompleteTextView textView = (AutoCompleteTextView)
-                            findViewById(R.id.search_user);
-                    String selectedEmail = textView.getText().toString();
-                    SharedPreferences sharedPref = context.getSharedPreferences(context.getResources().getString(R.string.sharedPrefName), Context.MODE_PRIVATE);
-                    String userId = sharedPref.getString("userId", "");
-                    String userName = sharedPref.getString("name", "");
-                    new SendRouteToUserTask(userId, userName, selectedEmail, routeId).execute();
                     break;
                 default:
                     break;
@@ -357,4 +344,4 @@ public class RouteListAdapter extends BaseAdapter implements View.OnClickListene
         context.startActivity(ii);
     }
 
-    }
+}
