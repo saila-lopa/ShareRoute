@@ -4,14 +4,19 @@
         android:layout_height="match_parent"
         android:orientation="vertical"
         >
-        <fragment xmlns:android="http://schemas.android.com/apk/res/android"
-            xmlns:map="http://schemas.android.com/apk/res-auto"
-            xmlns:tools="http://schemas.android.com/tools"
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/route_holder"
+        android:orientation="vertical"
+        >
+        <fragment
+            class="com.google.android.gms.maps.SupportMapFragment"
             android:id="@+id/map"
-            android:name="com.google.android.gms.maps.SupportMapFragment"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="0.6"
+            android:padding="5dp"
             />
         <ScrollView
             android:layout_width="match_parent"
@@ -23,49 +28,121 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 >
-                <TextView
-                    android:id="@+id/route_name"
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text=""
-                    android:textSize="20sp"
-                    android:textColor="#2D2D2D"
+                    android:orientation="horizontal"
                     >
-                </TextView>
-                <TextView
-                    android:id="@+id/time"
+                    <TextView
+                        android:id="@+id/route_name"
+                        android:layout_width="0dp"
+                        android:layout_weight="0.6"
+                        android:layout_height="wrap_content"
+                        android:text=""
+                        android:textSize="20sp"
+                        android:textColor="#2D2D2D"
+                        >
+                    </TextView>
+                    <Button
+                        android:id="@+id/btn_share"
+                        android:layout_width="0dp"
+                        android:layout_weight="0.4"
+                        android:layout_height="wrap_content"
+                        android:text="Share"
+                        android:textSize="15sp"
+                        />
+                </LinearLayout>
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text=""
-                    android:textSize="14sp"
+                    android:orientation="horizontal"
                     >
-                </TextView>
-                <TextView
-                    android:id="@+id/note"
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Time"
+                        android:textSize="14sp"
+                        />
+                    <TextView
+                        android:id="@+id/time"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text=""
+                        android:textSize="14sp"
+                        >
+                    </TextView>
+                </LinearLayout>
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text=""
-                    android:textSize="14sp"
+                    android:orientation="horizontal"
                     >
-                </TextView>
-                <TextView
-                    android:id="@+id/ride"
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Note"
+                        android:textSize="14sp"
+                        />
+                    <TextView
+                        android:id="@+id/note"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text=""
+                        android:textSize="14sp"
+                        >
+                    </TextView>
+                </LinearLayout>
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text=""
-                    android:textSize="14sp"
+                    android:orientation="horizontal"
                     >
-                </TextView>
-                <TextView
-                    android:id="@+id/fare"
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Ride"
+                        android:textSize="14sp"
+                        />
+                    <TextView
+                        android:id="@+id/ride"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text=""
+                        android:textSize="14sp"
+                        >
+                    </TextView>
+                </LinearLayout>
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text=""
-                    android:textSize="14sp"
+                    android:orientation="horizontal"
                     >
-                </TextView>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Fare"
+                        android:textSize="14sp"
+                        />
+                    <TextView
+                        android:id="@+id/fare"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text=""
+                        android:textSize="14sp"
+                        >
+                    </TextView>
+                </LinearLayout>
             </LinearLayout>
         </ScrollView>
+    </LinearLayout>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Request Loading"
+        android:id="@+id/not_found_msg"
+        />
 </LinearLayout>
+
+
 
 

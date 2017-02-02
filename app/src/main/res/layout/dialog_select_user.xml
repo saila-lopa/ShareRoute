@@ -26,6 +26,15 @@
         android:gravity="right"
         android:orientation="horizontal" >
         <Button
+            android:id="@+id/btn_share"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:clickable="true"
+            android:text="Save"
+            android:textColor="#5DBCD2"
+            />
+        <Button
             android:id="@+id/btn_cancel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -33,7 +42,7 @@
             android:clickable="true"
             android:text="Cancel"
             android:textColor="#5DBCD2"
-            android:textStyle="bold" />
+             />
     </LinearLayout>
 
 </LinearLayout>
