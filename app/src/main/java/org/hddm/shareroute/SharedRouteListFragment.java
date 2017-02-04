@@ -83,7 +83,7 @@ public class SharedRouteListFragment extends Fragment {
                 } else {
                     try {
                         JSONObject json_ob = new JSONObject(results);
-                        routeList = JsonHelper.parseRouteList(json_ob);
+                        routeList = JsonHelper.parseSharedRouteList(json_ob);
                     } catch (JSONException e) {
                         // TODO Auto-generated catch block
                         e.printStackTrace();
@@ -113,7 +113,7 @@ public class SharedRouteListFragment extends Fragment {
             super.onPostExecute(results);
             dialog.dismiss();
             JSONObject json_ob;
-            GridView routeGrid = (GridView) rootView.findViewById(R.id.grid_route_list);
+            GridView routeGrid = (GridView) rootView.findViewById(R.id.grid_shared_route_list);
             TextView nettext = (TextView) rootView.findViewById(R.id.networkerrortext);
             if (results == null || results.equals("network error")) {
                 nettext.setVisibility(View.VISIBLE);
@@ -123,7 +123,7 @@ public class SharedRouteListFragment extends Fragment {
                 if (routeList == null || routeList.size() <= 0) {
                     nettext.setVisibility(View.VISIBLE);
                     routeGrid.setVisibility(View.GONE);
-                    nettext.setText("No Saved Route yet!");
+                    nettext.setText("Can't find any route shared with you!");
                 } else {
                     nettext.setVisibility(View.GONE);
                     routeGrid.setVisibility(View.VISIBLE);

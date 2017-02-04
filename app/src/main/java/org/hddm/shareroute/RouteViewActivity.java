@@ -179,7 +179,7 @@ public class RouteViewActivity extends AppCompatActivity implements OnMapReadyCa
             TextView rideTv = (TextView) findViewById(R.id.ride);
             TextView fareTv = (TextView) findViewById(R.id.fare);
             routeNameTv.setText(route.getRouteName());
-            timeTv.setText(route.getQuality());
+            timeTv.setText("Estimated/User recommended Time: " + route.getQuality());
             noteTv.setText(route.getNote());
             rideTv.setText(route.getRide());
             fareTv.setText(route.getFare());

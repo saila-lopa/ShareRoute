@@ -27,6 +27,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
+                android:padding="5dp"
                 >
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -43,14 +44,27 @@
                         android:textColor="#2D2D2D"
                         >
                     </TextView>
-                    <Button
-                        android:id="@+id/btn_share"
+                    <LinearLayout
                         android:layout_width="0dp"
                         android:layout_weight="0.4"
                         android:layout_height="wrap_content"
-                        android:text="Share"
-                        android:textSize="15sp"
-                        />
+                        android:gravity="right"
+                        android:layout_gravity="right"
+                        >
+                        <Button
+                            android:id="@+id/btn_share"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Share"
+                            android:textSize="14sp"
+                            android:background="#2dbe60"
+                            android:textColor="#FFFFFF"
+                            android:layout_margin="0dp"
+                            android:padding="5dp"
+                            android:minHeight="0dp"
+                            android:minWidth="0dp"
+                            />
+                    </LinearLayout>
                 </LinearLayout>
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -60,8 +74,10 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Time"
+                        android:text="Estimated/User recommended Time"
                         android:textSize="14sp"
+                        android:layout_marginRight="8dp"
+                        android:visibility="gone"
                         />
                     <TextView
                         android:id="@+id/time"
@@ -75,13 +91,14 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
+                    android:orientation="vertical"
                     >
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Note"
+                        android:text="Note/Comments "
                         android:textSize="14sp"
+                        android:layout_marginRight="8dp"
                         />
                     <TextView
                         android:id="@+id/note"
@@ -100,7 +117,8 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Ride"
+                        android:text="Ride: "
+                        android:layout_marginRight="8dp"
                         android:textSize="14sp"
                         />
                     <TextView
@@ -120,8 +138,9 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Fare"
+                        android:text="Fare: "
                         android:textSize="14sp"
+                        android:layout_marginRight="8dp"
                         />
                     <TextView
                         android:id="@+id/fare"
@@ -132,6 +151,7 @@
                         >
                     </TextView>
                 </LinearLayout>
+
             </LinearLayout>
         </ScrollView>
     </LinearLayout>

@@ -64,7 +64,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                     extrasJSON = new JSONObject(extras);
                     if(extrasJSON.has("routeId")) {
                         int routeId = extrasJSON.getInt("routeId");
-                        intent = new Intent(this, MainActivity.class);
+                        intent = new Intent(this, RouteViewActivity.class);
                         intent.putExtra("routeId", routeId);
                     }  else {
                         intent = new Intent(this, MainActivity.class);

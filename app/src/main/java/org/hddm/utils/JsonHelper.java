@@ -3,6 +3,7 @@ package org.hddm.utils;
 import com.google.android.gms.maps.model.LatLng;
 
 import org.hddm.model.Route;
+import org.hddm.model.User;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -16,27 +17,13 @@ public class JsonHelper {
         try {
             JSONObject routeJSon = new JSONObject(routeString);
             JSONObject jsonRouteObj = routeJSon.getJSONObject("route");
-            Route route = new Route();
-            route.setRouteId(jsonRouteObj.getString("routeId"));
-            if (jsonRouteObj.has("routeName"))
-                route.setRouteName(jsonRouteObj.getString("routeName"));
-            if (jsonRouteObj.has("quality"))
-                route.setQuality(jsonRouteObj.getString("quality"));
-            if (jsonRouteObj.has("note"))
-                route.setNote(jsonRouteObj.getString("note"));
-            if (jsonRouteObj.has("ride"))
-                route.setRide(jsonRouteObj.getString("ride"));
-            if (jsonRouteObj.has("fare"))
-                route.setFare(jsonRouteObj.getString("fare"));
-            if (jsonRouteObj.has("createDate"))
-                route.setCreateDate(jsonRouteObj.getString("createDate"));
+            Route route = parseRoute(jsonRouteObj);
             if(jsonRouteObj.has("multilineString")) {
                 String multilineString = jsonRouteObj.getString("multilineString");
                 List<List<LatLng>> multiLines = parseMultiLineString(multilineString);
                 route.setPointsOnPath(multiLines);
             }
             return route;
-
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -61,7 +48,6 @@ public class JsonHelper {
                 polylinePoints.add(line);
             }
         }
-        String[] tmp2 = tmp[1].split("\\(");
         return  polylinePoints;
     }
     public static List<String> parseUserSuggestion(JSONObject usersJson) {
@@ -81,27 +67,25 @@ public class JsonHelper {
         }
         return  users;
     }
-    public static List<Route> parseRouteList(JSONObject routeListJSon) {
+    public static List<Route> parseSharedRouteList(JSONObject routeListJSon) {
         List<Route> routeList = new ArrayList<Route>();
         try {
             JSONArray routes = routeListJSon.getJSONArray("routeList");
             int i;
             for (i = 0; i < routes.length(); i++) {
                 JSONObject jsonRouteObj = routes.getJSONObject(i);
-                Route route = new Route();
-                route.setRouteId(jsonRouteObj.getString("routeId"));
-                if (jsonRouteObj.has("routeName"))
-                    route.setRouteName(jsonRouteObj.getString("routeName"));
-                if (jsonRouteObj.has("quality"))
-                    route.setQuality(jsonRouteObj.getString("quality"));
-                if (jsonRouteObj.has("note"))
-                    route.setNote(jsonRouteObj.getString("note"));
-                if (jsonRouteObj.has("ride"))
-                    route.setRide(jsonRouteObj.getString("ride"));
-                if (jsonRouteObj.has("fare"))
-                    route.setFare(jsonRouteObj.getString("fare"));
-                if (jsonRouteObj.has("createDate"))
-                    route.setCreateDate(jsonRouteObj.getString("createDate"));
+                Route route = parseRoute(jsonRouteObj);
+                if(jsonRouteObj.has("sharedBy")) {
+                    User user = new User();
+                    JSONObject sharedByUser = jsonRouteObj.getJSONObject("sharedBy");
+                    if(sharedByUser.has("name"))
+                        user.setName(sharedByUser.getString("name"));
+                    if(sharedByUser.has("email"))
+                        user.setEmail(sharedByUser.getString("email"));
+                    if(sharedByUser.has("userId"))
+                        user.setUserId(sharedByUser.getInt("userId"));
+                    route.setSharedBy(user);
+                }
                 routeList.add(route);
             }
             return routeList;
@@ -111,7 +95,44 @@ public class JsonHelper {
         }
         return  routeList;
     }
+    public static List<Route> parseRouteList(JSONObject routeListJSon) {
+        List<Route> routeList = new ArrayList<Route>();
+        try {
+            JSONArray routes = routeListJSon.getJSONArray("routeList");
+            int i;
+            for (i = 0; i < routes.length(); i++) {
+                JSONObject jsonRouteObj = routes.getJSONObject(i);
+                Route route = parseRoute(jsonRouteObj);
+                routeList.add(route);
+            }
+            return routeList;
 
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return  routeList;
+    }
+    private static Route parseRoute(JSONObject jsonRouteObj) {
+        Route route = new Route();
+        try {
+            route.setRouteId(jsonRouteObj.getString("routeId"));
+            if (jsonRouteObj.has("routeName"))
+                route.setRouteName(jsonRouteObj.getString("routeName"));
+            if (jsonRouteObj.has("quality"))
+                route.setQuality(jsonRouteObj.getString("quality"));
+            if (jsonRouteObj.has("note"))
+                route.setNote(jsonRouteObj.getString("note"));
+            if (jsonRouteObj.has("ride"))
+                route.setRide(jsonRouteObj.getString("ride"));
+            if (jsonRouteObj.has("fare"))
+                route.setFare(jsonRouteObj.getString("fare"));
+            if (jsonRouteObj.has("createDate"))
+                route.setCreateDate(jsonRouteObj.getString("createDate"));
+        }catch (Exception ex){
+            ex.printStackTrace();
+        }
+        return route;
+    }
     public static JSONObject getRouteJson(Route route) {
         JSONObject finalobject = new JSONObject();
         try {

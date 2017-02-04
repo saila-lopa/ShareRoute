@@ -41,7 +41,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Fare"
+                android:text="Fare (e.g 15tk)"
                 android:textSize="16sp"
                 />
             <EditText
@@ -63,7 +63,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Ride"
+                android:text="Ride(e.g Riksha)"
                 android:textSize="16sp"
                 />
             <EditText
@@ -83,7 +83,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Note"
+                android:text="Note/Comments on the route"
                 android:textSize="16sp"
                 />
             <EditText
@@ -103,7 +103,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Time"
+                android:text="Time(e.g 15minutes)"
                 android:textSize="16sp"
                 />
             <EditText

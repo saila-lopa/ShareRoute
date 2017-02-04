@@ -18,13 +18,9 @@
         android:layout_height="match_parent"
         android:numColumns="1"
         android:gravity="center"
-        android:background="#FFFFFF"
-        android:horizontalSpacing="10dp"
-        android:verticalSpacing="10dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="8dp"
+        android:verticalSpacing="5dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="5dp"
         >
     </GridView>
 </RelativeLayout>

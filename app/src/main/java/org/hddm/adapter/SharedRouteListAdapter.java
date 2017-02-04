@@ -78,7 +78,7 @@ public class SharedRouteListAdapter extends BaseAdapter implements View.OnClickL
         // ViewHolder holder ;
 //        if (convertView == null)
 //        {
-        gridView = inflater.inflate( R.layout.grid_route_list , null);
+        gridView = inflater.inflate( R.layout.grid_shared_route_list , null);
 //        }
 //        else
 //        {
@@ -90,12 +90,14 @@ public class SharedRouteListAdapter extends BaseAdapter implements View.OnClickL
         TextView noteTv = (TextView) gridView.findViewById(R.id.note);
         TextView rideTv = (TextView) gridView.findViewById(R.id.ride);
         TextView fareTv = (TextView) gridView.findViewById(R.id.fare);
+        TextView sharingUuserNameTv = (TextView) gridView.findViewById(R.id.sharing_user_name);
         final Route route = routeList.get(position);
         routeNameTv.setText(route.getRouteName());
-        timeTv.setText(route.getQuality());
+        timeTv.setText("Estimated/User recommended Time: " + route.getQuality());
         noteTv.setText(route.getNote());
         rideTv.setText(route.getRide());
         fareTv.setText(route.getFare());
+        sharingUuserNameTv.setText("Shared By : " + route.getSharedBy().getName() + "(" + route.getSharedBy().getEmail() + ")");
 
         Button btnShare = (Button)gridView.findViewById(R.id.btn_share);
         btnShare.setOnClickListener(new View.OnClickListener() {

@@ -84,6 +84,12 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+//        if(getIntent()!=null && getIntent().getExtras()!=null && getIntent().getExtras().get("routeId")!=null) {
+//            int routeId = Integer.parseInt(getIntent().getExtras().getString("routeId"));
+//            Intent intent = new Intent(MainActivity.this, RouteViewActivity.class);
+//            intent.putExtra("routeId", routeId);
+//            startActivity(intent);
+//        }
         displayContentFragment(R.id.route_list);
         SharedPreferences sharedPref = getSharedPreferences(getResources().getString(R.string.sharedPrefName), Context.MODE_PRIVATE);
         userId = sharedPref.getString("userId", "");
@@ -271,8 +277,6 @@ public class MainActivity extends AppCompatActivity
             displayContentFragment(id);
         } else if (id == R.id.track_route) {
             displayContentFragment(R.id.track_route);
-        } else if (id == R.id.nav_share) {
-
         } else if(id == R.id.shared_with_me) {
             displayContentFragment(R.id.shared_with_me);
         } else if (id == R.id.logout) {
@@ -356,7 +360,7 @@ public class MainActivity extends AppCompatActivity
         switch (id) {
             case R.id.route_list:
                 fragment = new RouteListFragment();
-                title  = "Routes";
+                title  = "My Routes";
                 break;
             case R.id.draw_route:
                 fragment = new DrawRouteFragment();
@@ -364,7 +368,7 @@ public class MainActivity extends AppCompatActivity
                 break;
             case R.id.shared_with_me:
                 fragment = new SharedRouteListFragment();
-                title = "Draw Route";
+                title = "Shared With Me";
                 break;
             case R.id.track_route:
                 fragment = new TrackRouteFragment();
@@ -393,6 +397,9 @@ public class MainActivity extends AppCompatActivity
         } else if(id == R.id.track_route) {
             btnTrackRoute.setVisibility(View.VISIBLE);
             btnTrackRoute.setOnClickListener(this);
+            btnDrawRoute.setVisibility(View.GONE);
+        } else {
+            btnTrackRoute.setVisibility(View.GONE);
             btnDrawRoute.setVisibility(View.GONE);
         }
     }

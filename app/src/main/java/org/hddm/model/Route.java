@@ -18,6 +18,15 @@ public class Route {
     String createdBy;
     long createdThrough;
     String createDate;
+    User sharedBy;
+
+    public User getSharedBy() {
+        return sharedBy;
+    }
+
+    public void setSharedBy(User sharedBy) {
+        this.sharedBy = sharedBy;
+    }
 
     public String getRouteName() {
         return routeName;

@@ -99,7 +99,7 @@ public class RouteListAdapter extends BaseAdapter implements View.OnClickListene
         TextView fareTv = (TextView) gridView.findViewById(R.id.fare);
         final Route route = routeList.get(position);
         routeNameTv.setText(route.getRouteName());
-        timeTv.setText(route.getQuality());
+        timeTv.setText("Estimated/User recommended Time: " + route.getQuality());
         noteTv.setText(route.getNote());
         rideTv.setText(route.getRide());
         fareTv.setText(route.getFare());
@@ -177,7 +177,7 @@ public class RouteListAdapter extends BaseAdapter implements View.OnClickListene
             btnCancel = (Button) findViewById(R.id.btn_cancel);
             btnShare = (Button) findViewById(R.id.btn_share);
             btnCancel.setOnClickListener(this);
-            btnCancel.setOnClickListener(this);
+            btnShare.setOnClickListener(this);
         }
 
         @Override
@@ -309,21 +309,12 @@ public class RouteListAdapter extends BaseAdapter implements View.OnClickListene
                 if (results == null || results.equals("network error")) {
 
                 } else {
-                    try {
-                        JSONObject json_ob = new JSONObject(results);
-                        newUsers = JsonHelper.parseUserSuggestion(json_ob);
-                    } catch (JSONException e) {
-                        // TODO Auto-generated catch block
-                        e.printStackTrace();
-                    }
+                    JSONObject json_ob = new JSONObject(results);
+                    newUsers = JsonHelper.parseUserSuggestion(json_ob);
                 }
                 if (results.isEmpty())
                     return null;
                 return results;
-
-            } catch (ExceptionInInitializerError e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
             } catch (Exception e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
