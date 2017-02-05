@@ -21,6 +21,7 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
 
@@ -42,10 +43,10 @@ import java.util.List;
 /**
  * Created by Saila on 12/24/2016.
  */
-public class DrawRouteFragment extends Fragment implements OnMapReadyCallback, GoogleMap.OnMapClickListener {
+public class DrawRouteFragment extends Fragment implements OnMapReadyCallback, GoogleMap.OnMapClickListener, GoogleMap.OnMarkerClickListener {
     private GoogleMap mMap;
     private ArrayList<LatLng> selectedPoints;
-    private ArrayList<LatLng> MarkerPoints;
+    private ArrayList<Marker> MarkerPoints;
     private static final String[] LOCATION_PERMS={
             android.Manifest.permission.ACCESS_FINE_LOCATION
     };
@@ -70,7 +71,7 @@ public class DrawRouteFragment extends Fragment implements OnMapReadyCallback, G
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
         selectedPoints = new ArrayList<LatLng>();
-        MarkerPoints = new ArrayList<LatLng>();
+        MarkerPoints = new ArrayList<Marker>();
         context= getActivity();
         return rootView;
     }
@@ -87,6 +88,7 @@ public class DrawRouteFragment extends Fragment implements OnMapReadyCallback, G
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
         mMap.setOnMapClickListener(this);
+        mMap.setOnMarkerClickListener(this);
 //        locationManagerService = new LocationServiceManager(context);
 //        if(!locationManagerService.locationServiceAvailable)
 //        {
@@ -153,7 +155,7 @@ public class DrawRouteFragment extends Fragment implements OnMapReadyCallback, G
 //        //Save it to SharedPreference or SQLite .
 //        Toast.makeText(getActivity().getApplicationContext(),"Block area updated",Toast.LENGTH_LONG).show();
         // Adding new item to the ArrayList
-        MarkerPoints.add(latLng);
+        //MarkerPoints.add(latLng);
 
         // Creating MarkerOptions
         MarkerOptions options = new MarkerOptions();
@@ -165,20 +167,19 @@ public class DrawRouteFragment extends Fragment implements OnMapReadyCallback, G
          * For the start location, the color of marker is GREEN and
          * for the end location, the color of marker is RED.
          */
-        if (MarkerPoints.size() == 1) {
+        if (MarkerPoints.size() == 0) {
             options.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
-        } else if (MarkerPoints.size() == 2) {
+        } else if (MarkerPoints.size() == 1) {
             options.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
         }
 
 
         // Add new marker to the Google Map Android API V2
-        mMap.addMarker(options);
+        Marker marker= mMap.addMarker(options);
+        MarkerPoints.add(marker);
 
         // Checks, whether start and end locations are captured
         if (MarkerPoints.size() >= 2) {
-            LatLng origin = MarkerPoints.get(0);
-            LatLng dest = MarkerPoints.get(1);
 
             // Getting URL to the Google Directions API
             String url = getUrl();
@@ -194,6 +195,19 @@ public class DrawRouteFragment extends Fragment implements OnMapReadyCallback, G
         }
 
     }
+
+    @Override
+    public boolean onMarkerClick(Marker marker) {
+        for(Marker position:MarkerPoints)
+        {
+            if(position.getId().equalsIgnoreCase(marker.getId()))
+            {
+                Log.d("DRAW_ROUTE_FRAGMENT", "Marker Id matched!");
+            }
+        }
+        return false;
+    }
+
     private class FetchUrl extends AsyncTask<String, Void, String> {
 
         @Override
@@ -227,15 +241,15 @@ public class DrawRouteFragment extends Fragment implements OnMapReadyCallback, G
         StringBuilder urlString = new StringBuilder();
         if(MarkerPoints!=null && MarkerPoints.size()>=2) {
             urlString.append("https://maps.googleapis.com/maps/api/directions/json?");
-            urlString.append("origin=" + MarkerPoints.get(0).latitude + "," + MarkerPoints.get(0).longitude);
+            urlString.append("origin=" + MarkerPoints.get(0).getPosition().latitude + "," + MarkerPoints.get(0).getPosition().longitude);
             if(MarkerPoints.size()>2){
-                urlString.append("&waypoints=" + MarkerPoints.get(1).latitude + "," + MarkerPoints.get(1).longitude);
-                for(int i=2; i<MarkerPoints.size(); i++) {
-                    urlString.append("|" + MarkerPoints.get(i).latitude + "," + MarkerPoints.get(i).longitude);
+                urlString.append("&waypoints=" + MarkerPoints.get(1).getPosition().latitude + "," + MarkerPoints.get(1).getPosition().longitude);
+                for(int i=2; i<MarkerPoints.size()-1; i++) {
+                    urlString.append("|" + MarkerPoints.get(i).getPosition().latitude + "," + MarkerPoints.get(i).getPosition().longitude);
                 }
             }
             int endPosition = MarkerPoints.size()-1;
-            urlString.append("&destination=" + MarkerPoints.get(endPosition).latitude + "," + MarkerPoints.get(endPosition).longitude);
+            urlString.append("&destination=" + MarkerPoints.get(endPosition).getPosition().latitude + "," + MarkerPoints.get(endPosition).getPosition().longitude);
             urlString.append("&sensor=false" + "&key=" + Constraints.apiKey);
         }
         return  urlString.toString();
