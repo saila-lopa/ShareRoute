@@ -3,13 +3,16 @@ package org.hddm.shareroute;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TableLayout;
@@ -52,6 +55,27 @@ public class RouteViewActivity extends AppCompatActivity implements OnMapReadyCa
         mapFragment.getMapAsync(this);
         if(getIntent()!=null && getIntent().getExtras()!=null)
             routeId = getIntent().getExtras().getInt("routeId");
+        ActionBar actionBar=getSupportActionBar();
+        actionBar.setDisplayHomeAsUpEnabled(true);
+        actionBar.setHomeButtonEnabled(true);
+    }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem menuItem)
+    {
+        boolean result=false;
+        switch (menuItem.getItemId()) {
+            case android.R.id.home:
+                onBackPressed();
+                Intent ii = new Intent(RouteViewActivity.this, MainActivity.class);
+                ii.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                ii.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(ii);
+                result= true;
+            break;
+            default:
+                result= super.onOptionsItemSelected(menuItem);
+        }
+        return result;
     }
     @Override
     public void onMapReady(GoogleMap googleMap) {
