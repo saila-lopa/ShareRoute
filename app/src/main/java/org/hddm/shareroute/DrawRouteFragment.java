@@ -14,6 +14,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -180,31 +181,56 @@ public class DrawRouteFragment extends Fragment implements OnMapReadyCallback, G
 
         // Checks, whether start and end locations are captured
         if (MarkerPoints.size() >= 2) {
-
-            // Getting URL to the Google Directions API
-            String url = getUrl();
-            Log.d("onMapClick", url.toString());
-            FetchUrl FetchUrl = new FetchUrl();
-
-            // Start downloading json data from Google Directions API
-            String[] params = {url};
-            FetchUrl.execute(params);
-            //move map camera
-//            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(origin, 15));
-//            mMap.animateCamera(CameraUpdateFactory.zoomTo(11));
+            drawNewRoute();
         }
 
     }
+    private void drawNewRoute() {
+        // Getting URL to the Google Directions API
+        mMap.clear();
+        String url = getUrl();
+        Log.d("onMapClick", url.toString());
+        FetchUrl FetchUrl = new FetchUrl();
 
+        // Start downloading json data from Google Directions API
+        String[] params = {url};
+        FetchUrl.execute(params);
+        for (int i=0; i<MarkerPoints.size(); i++) {
+            MarkerOptions option = new MarkerOptions();
+            option.position(MarkerPoints.get(i).getPosition());
+            mMap.addMarker(option);
+        }
+    }
     @Override
     public boolean onMarkerClick(Marker marker) {
-        for(Marker position:MarkerPoints)
-        {
-            if(position.getId().equalsIgnoreCase(marker.getId()))
-            {
-                Log.d("DRAW_ROUTE_FRAGMENT", "Marker Id matched!");
+        final Marker currentMarker = marker;
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setMessage("Do you want to delete this marker?");
+        builder.setTitle("Marker Option");
+        builder.setCancelable(false);
+        builder.setPositiveButton("Delete", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+//                for(Marker position:MarkerPoints) {
+//                    if(position.getId().equalsIgnoreCase(currentMarker.getId())) {
+//                        tappedMarker = position;
+//                        break;
+//                    }
+//                }
+               boolean status =  MarkerPoints.remove(currentMarker);
+                currentMarker.remove();
+                if(MarkerPoints.size()>=2) {
+                    drawNewRoute();
+                }
             }
-        }
+        });
+
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+
+            }
+        });
+        final  AlertDialog MessageModalDialog = builder.create();
+        MessageModalDialog.show();
         return false;
     }
 
